@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: podinfo-rs
+  namespace: podinfo
+  labels:
+    app: podinfo-rs
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: podinfo-rs
+  template:
+    metadata:
+      labels:
+        app: podinfo-rs
+    spec:
+      containers:
+        - name: podinfo
+          image: ghcr.io/stefanprodan/podinfo:6.7.0
+          ports:
+            - name: http
+              containerPort: 9898
+          env:
+            - name: PODINFO_UI_COLOR
+              value: "#22c55e"
+            - name: PODINFO_UI_MESSAGE
+              value: "Hello from a ReplicaSet"
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 64Mi

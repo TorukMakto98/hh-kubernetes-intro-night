@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: podinfo-pod
+  namespace: podinfo
+  labels:
+    app: podinfo-pod
+spec:
+  containers:
+    - name: podinfo
+      image: ghcr.io/stefanprodan/podinfo:6.7.0
+      ports:
+        - name: http
+          containerPort: 9898
+      env:
+        - name: PODINFO_UI_COLOR
+          value: "#3b82f6"
+        - name: PODINFO_UI_MESSAGE
+          value: "Hello from a bare Pod"
+      resources:
+        requests:
+          cpu: 10m
+          memory: 32Mi
+        limits:
+          memory: 64Mi

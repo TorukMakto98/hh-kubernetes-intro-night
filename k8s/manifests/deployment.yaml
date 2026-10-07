@@ -1,20 +1,56 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx
-  namespace: nginx
+  name: podinfo
+  namespace: podinfo
+  labels:
+    app: podinfo
 spec:
+  replicas: 3
   selector:
     matchLabels:
-      app: nginx
-  replicas: 2
+      app: podinfo
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   template:
     metadata:
       labels:
-        app: nginx
+        app: podinfo
     spec:
       containers:
-      - name: nginx
-        image: nginx:trixie-perl
-        ports:
-        - containerPort: 80
+        - name: podinfo
+          image: ghcr.io/stefanprodan/podinfo:6.7.0
+          ports:
+            - name: http
+              containerPort: 9898
+          # env:
+          #   - name: PODINFO_UI_COLOR
+          #     value: "#a855f7"
+          #   - name: PODINFO_UI_MESSAGE
+          #     value: "Hello from a Deployment"
+          envFrom:
+            - configMapRef:
+                name: podinfo-config
+            - secretRef:
+                name: podinfo-secret
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 64Mi
