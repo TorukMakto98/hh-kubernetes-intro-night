@@ -26,16 +26,16 @@ spec:
           ports:
             - name: http
               containerPort: 9898
-          # env:
-          #   - name: PODINFO_UI_COLOR
-          #     value: "#a855f7"
-          #   - name: PODINFO_UI_MESSAGE
-          #     value: "Hello from a Deployment"
-          envFrom:
-            - configMapRef:
-                name: podinfo-config
-            - secretRef:
-                name: podinfo-secret
+          env:
+            - name: PODINFO_UI_COLOR
+              value: "#a855f7"
+            - name: PODINFO_UI_MESSAGE
+              value: "Hello from a Deployment"
+          # envFrom:
+          #   - configMapRef:
+          #       name: podinfo-config
+          #   - secretRef:
+          #       name: podinfo-secret
           readinessProbe:
             httpGet:
               path: /readyz
